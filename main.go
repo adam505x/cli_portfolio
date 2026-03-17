@@ -18,6 +18,7 @@ import (
 	"github.com/charmbracelet/wish/activeterm"
 	bm "github.com/charmbracelet/wish/bubbletea"
 	lm "github.com/charmbracelet/wish/logging"
+	"github.com/joho/godotenv"
 	"portfolio/tui"
 	"portfolio/web"
 )
@@ -30,6 +31,10 @@ const (
 )
 
 func main() {
+	if err := godotenv.Load(); err != nil {
+		log.Warn("no .env file found, falling back to environment variables")
+	}
+
 	// SSH server
 	s, err := wish.NewServer(
 		wish.WithAddress(net.JoinHostPort(host, strconv.Itoa(sshPort))),
