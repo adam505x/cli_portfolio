@@ -10,11 +10,15 @@ import (
 	"portfolio/tui/theme"
 )
 
-// TopTracks, RecentFilms, and AnimFrame are set by app.go.
+// TopTracks, RecentFilms, AnimFrame, and StarsArt are set by app.go.
 var (
 	TopTracks   []services.Track
 	RecentFilms []services.Film
 	AnimFrame   int
+	StarsArt       string
+	GalaxyArt      string
+	CatArt         string
+	HeadphonesArt  string
 )
 
 // ── Edit your personal info here ──────────────────────────────────────────────
@@ -56,7 +60,7 @@ func (p AboutPage) Update(key string) router.Action {
 }
 
 func (p AboutPage) View() string {
-	// ── Left column: horse animation ──────────────────────────────────────────
+	// ── Left column: horse animation + headphones below ──────────────────────
 	var leftLines []string
 	if len(HorseFrames) > 0 {
 		frame := HorseFrames[AnimFrame%len(HorseFrames)]
@@ -86,9 +90,9 @@ func (p AboutPage) View() string {
 		add(row(label, line))
 	}
 	add("")
-	add(row("github", about.GitHub))
-	add(row("linkedin", about.LinkedIn))
-	add(row("email", about.Email))
+	add(row("github", osc8(about.GitHub, about.GitHub)))
+	add(row("linkedin", osc8(about.LinkedIn, about.LinkedIn)))
+	add(row("email", osc8("mailto:"+about.Email, about.Email)))
 
 	add("")
 	add(theme.Dim.Render(strings.Repeat("─", 36)))
@@ -128,14 +132,22 @@ func (p AboutPage) View() string {
 	add("")
 	add(theme.Dim.Render("esc  back"))
 
-	// ── Manual line-by-line horizontal join (about left, horse right) ──────────
+	if HeadphonesArt != "" {
+		add("")
+		normalized := strings.ReplaceAll(HeadphonesArt, "\r\n", "\n")
+		for _, l := range strings.Split(strings.TrimRight(normalized, "\n"), "\n") {
+			right = append(right, l)
+		}
+	}
+
+	// ── Two-column join: about content (left) + horse animation (right) ────────
 	maxLeft := 0
 	for _, l := range right {
 		if w := lipgloss.Width(l); w > maxLeft {
 			maxLeft = w
 		}
 	}
-	const gap = "          " // padding between columns
+	const gap = "          "
 
 	n := len(right)
 	if len(leftLines) > n {

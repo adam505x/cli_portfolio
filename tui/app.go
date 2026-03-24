@@ -4,11 +4,9 @@ import (
 	"time"
 
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/charmbracelet/lipgloss"
 	"portfolio/tui/pages"
 	"portfolio/tui/router"
 	"portfolio/tui/services"
-	"portfolio/tui/theme"
 )
 
 // ── Async messages ────────────────────────────────────────────────────────────
@@ -28,6 +26,10 @@ type Model struct {
 }
 
 func NewModel(w, h int) Model {
+	pages.StarsArt = StarsArt
+	pages.GalaxyArt = GalaxyArt
+	pages.CatArt = CatArt
+	pages.HeadphonesArt = HeadphonesArt
 	return Model{
 		stack:  []router.Page{pages.NewHome(Portrait, NameArt)},
 		width:  w,
@@ -76,6 +78,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.width = msg.Width
 		m.height = msg.Height
 		pages.TermHeight = msg.Height
+		pages.TermWidth = msg.Width
 
 	case lastFMMsg:
 		pages.TopTracks = msg.tracks
@@ -87,10 +90,8 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		pages.RecentFilms = msg.films
 
 	case tickMsg:
-		if len(pages.HorseFrames) > 0 {
-			m.animFrame = (m.animFrame + 1) % len(pages.HorseFrames)
-			pages.AnimFrame = m.animFrame
-		}
+		m.animFrame++
+		pages.AnimFrame = m.animFrame
 		return m, tick()
 
 	case tea.KeyMsg:
@@ -118,10 +119,5 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 // ── View ──────────────────────────────────────────────────────────────────────
 
 func (m Model) View() string {
-	bg := lipgloss.NewStyle().
-		Background(lipgloss.Color(theme.ColorBg)).
-		Width(m.width).
-		Height(m.height)
-
-	return bg.Render(m.stack[len(m.stack)-1].View())
+	return m.stack[len(m.stack)-1].View()
 }

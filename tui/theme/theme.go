@@ -31,7 +31,6 @@ var (
 		Foreground(lipgloss.Color(ColorWhite))
 
 	Page = lipgloss.NewStyle().
-		Background(lipgloss.Color(ColorBg)).
 		Foreground(lipgloss.Color(ColorWhite)).
 		Padding(2, 4)
 )

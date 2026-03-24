@@ -35,6 +35,17 @@ func main() {
 		log.Warn("no .env file found, falling back to environment variables")
 	}
 
+	// Local mode: run TUI directly in the current terminal (no SSH)
+	if len(os.Args) > 1 && os.Args[1] == "-local" {
+		m := tui.NewModel(220, 50)
+		p := tea.NewProgram(m, tea.WithAltScreen())
+		if _, err := p.Run(); err != nil {
+			log.Error("local run error", "error", err)
+			os.Exit(1)
+		}
+		return
+	}
+
 	// SSH server
 	s, err := wish.NewServer(
 		wish.WithAddress(net.JoinHostPort(host, strconv.Itoa(sshPort))),
