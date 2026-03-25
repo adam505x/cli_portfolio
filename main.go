@@ -25,7 +25,7 @@ import (
 
 const (
 	host    = "0.0.0.0"
-	sshPort = 2222
+	sshPort = 443
 	webPort = 8080
 	keyPath = ".ssh/id_ed25519"
 )
