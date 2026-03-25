@@ -27,12 +27,13 @@
     term.loadAddon(fit);
     term.open(document.getElementById('terminal'));
     fit.fit();
+    term.focus();
 
     const proto = location.protocol === 'https:' ? 'wss' : 'ws';
     const ws = new WebSocket(`${proto}://${location.host}/ws`);
     ws.binaryType = 'arraybuffer';
 
-    ws.onopen = () => sendResize();
+    ws.onopen = () => { sendResize(); term.focus(); };
 
     ws.onmessage = e => term.write(new Uint8Array(e.data));
 
