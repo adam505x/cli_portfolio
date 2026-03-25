@@ -40,6 +40,7 @@
     ws.onclose = () => term.write('\r\n\r\nDisconnected. Refresh to reconnect.');
 
     term.onData(data => {
+      if (data === '\x03') return; // suppress Ctrl+C
       if (ws.readyState === WebSocket.OPEN) {
         ws.send(new TextEncoder().encode(data));
       }
